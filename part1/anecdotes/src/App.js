@@ -40,9 +40,7 @@ const App = () => {
   const upvote = () => {
     let copyOfUpdoodes = [...upDoodes];
     copyOfUpdoodes[selected] += 1;
-    console.log('copy of dogs:', copyOfUpdoodes);
     setUpDoodes(copyOfUpdoodes);
-    console.log('upddodes:', upDoodes);
     mostUpvotedCalc();
   }
 
