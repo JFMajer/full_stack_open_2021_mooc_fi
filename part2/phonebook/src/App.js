@@ -6,11 +6,35 @@ import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
 import phonebook from './services/phonebook';
 
+const ShowMessage = ({message}) => {
+  if (message === '') {
+    return null
+  }
+  return (
+    <div className="message">
+      {message}
+    </div>
+  )
+}
+
+const ShowErrorMessage = ({errorMessage}) => {
+  if (errorMessage === '') {
+    return null
+  }
+  return (
+    <div className="errorMessage">
+      {errorMessage}
+    </div>
+  )
+
+}
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
+  const [message, setMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
 
   const hook = () => {
     phonebook
@@ -61,8 +85,16 @@ const App = () => {
             .updateNumber(persona.id, person)
             .then(iGotPersonBack => {
               setPersons(persons.map(p => p.id === iGotPersonBack.id ? iGotPersonBack : p))
-            }
-            )
+            })
+            .then(() => {
+              setMessage(`Number for ${persona.name} updated`)
+              setTimeout(() => {
+                setMessage(null)
+              }, 5000)
+            })
+            .catch(error => {
+              setErrorMessage(`Something bad happened: ${error}`)
+            })
         }
         return isTaken = true;
       }
@@ -73,6 +105,13 @@ const App = () => {
         .then(allNumbers => {
           setPersons(persons.concat(allNumbers))
         })
+        .then(() => {
+          setMessage(`Person ${person.name} has been added to phonebook!`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+        })
+
     }
     setNewName('')
     setNewNumber('')
@@ -87,6 +126,12 @@ const App = () => {
         .then(
           setPersons(persons.filter(person => person.id !== id))
         )
+        .then(() => {
+          setMessage(`Person ${person.name} has been removed!`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+        })
     }
   }
 
@@ -98,7 +143,8 @@ const App = () => {
         <h2>Add new</h2>
         <PersonForm addName={ addName } newName={ newName } handleNameChange={ handleNameChange } newNumber={ newNumber } handleNumberChange={ handleNumberChange } />
       </div>
-
+      <ShowMessage message={message} />
+      <ShowErrorMessage errorMessage={errorMessage} />
       <h2>Numbers</h2>
       <ul>
         { persons.filter(person => person.display).map(person => {
