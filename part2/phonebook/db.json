@@ -19,34 +19,10 @@
       "display": true
     },
     {
-      "name": "Mary Poppendieck",
-      "number": "39-23-6423122",
-      "id": 4,
-      "display": true
-    },
-    {
       "name": "Jakub",
       "number": "112",
       "display": true,
-      "id": 5
-    },
-    {
-      "name": "Bartek",
-      "number": "231312",
-      "display": true,
-      "id": 6
-    },
-    {
-      "name": "Tadeusz",
-      "number": "992",
-      "display": true,
-      "id": 7
-    },
-    {
-      "name": "Barłomiej",
-      "number": "111",
-      "display": true,
-      "id": 8
+      "id": 4
     }
   ]
 }

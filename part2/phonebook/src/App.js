@@ -1,10 +1,9 @@
-import logo from './logo.svg';
+//import logo from './logo.svg';
 import './App.css';
 import React, { useEffect, useState } from 'react'
 import Number from './components/Number'
 import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
-import axios from 'axios'
 import phonebook from './services/phonebook';
 
 
@@ -12,8 +11,6 @@ const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
-
-
 
   const hook = () => {
     phonebook
@@ -24,7 +21,6 @@ const App = () => {
   }
 
   useEffect(hook, [])
-
 
   const handleNameChange = (e) => {
     setNewName(e.target.value)
@@ -59,8 +55,16 @@ const App = () => {
     console.log('person:', person)
     persons.map(persona => {
       if (persona.name === newName) {
-        alert(`${newName} is already added to phonebook`);
-        isTaken = true;
+        let confirm = window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`);
+        if (confirm) {
+          phonebook
+            .updateNumber(persona.id, person)
+            .then(iGotPersonBack => {
+              setPersons(persons.map(p => p.id === iGotPersonBack.id ? iGotPersonBack : p))
+            }
+            )
+        }
+        return isTaken = true;
       }
     })
     if (!isTaken) {
@@ -72,7 +76,18 @@ const App = () => {
     }
     setNewName('')
     setNewNumber('')
-    //console.log(persons)
+  }
+
+  const handleDelete = (person) => {
+    const id = person.id;
+    let confirm = window.confirm(`you sure you want to remove ${person.name}?`)
+    if (confirm) {
+      phonebook
+        .deletePerson(id)
+        .then(
+          setPersons(persons.filter(person => person.id !== id))
+        )
+    }
   }
 
   return (
@@ -87,7 +102,7 @@ const App = () => {
       <h2>Numbers</h2>
       <ul>
         { persons.filter(person => person.display).map(person => {
-          return <Number key={ person.name } person={ person } />
+          return <Number key={ person.name } person={ person } handleDelete={ () => handleDelete(person) } />
         }) }
       </ul>
     </div>
