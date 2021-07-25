@@ -5,25 +5,26 @@ import Number from './components/Number'
 import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
 import phonebook from './services/phonebook';
+import axios from 'axios';
 
-const ShowMessage = ({message}) => {
+const ShowMessage = ({ message }) => {
   if (message === '') {
     return null
   }
   return (
     <div className="message">
-      {message}
+      { message }
     </div>
   )
 }
 
-const ShowErrorMessage = ({errorMessage}) => {
+const ShowErrorMessage = ({ errorMessage }) => {
   if (errorMessage === '') {
     return null
   }
   return (
     <div className="errorMessage">
-      {errorMessage}
+      { errorMessage }
     </div>
   )
 
@@ -36,15 +37,15 @@ const App = () => {
   const [message, setMessage] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
 
-  const hook = () => {
+  useEffect(() => {
     phonebook
       .getAll()
-      .then(allNumbers => {
-        setPersons(allNumbers)
+      .then(res => {
+        console.log('promise fuillfiled')
+        setPersons(res)
+        console.log(persons)
       })
-  }
-
-  useEffect(hook, [])
+  }, [])
 
   const handleNameChange = (e) => {
     setNewName(e.target.value)
@@ -93,7 +94,7 @@ const App = () => {
               }, 5000)
             })
             .catch(error => {
-              setErrorMessage(`Something bad happened: ${error}`)
+              setErrorMessage(error.response.data.error)
             })
         }
         return isTaken = true;
@@ -111,6 +112,9 @@ const App = () => {
             setMessage(null)
           }, 5000)
         })
+        .catch(error => {
+          setErrorMessage(error.response.data.error)
+        })
 
     }
     setNewName('')
@@ -119,6 +123,7 @@ const App = () => {
 
   const handleDelete = (person) => {
     const id = person.id;
+    console.log(id)
     let confirm = window.confirm(`you sure you want to remove ${person.name}?`)
     if (confirm) {
       phonebook
@@ -143,8 +148,8 @@ const App = () => {
         <h2>Add new</h2>
         <PersonForm addName={ addName } newName={ newName } handleNameChange={ handleNameChange } newNumber={ newNumber } handleNumberChange={ handleNumberChange } />
       </div>
-      <ShowMessage message={message} />
-      <ShowErrorMessage errorMessage={errorMessage} />
+      <ShowMessage message={ message } />
+      <ShowErrorMessage errorMessage={ errorMessage } />
       <h2>Numbers</h2>
       <ul>
         { persons.filter(person => person.display).map(person => {
