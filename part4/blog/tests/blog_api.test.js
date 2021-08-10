@@ -64,6 +64,25 @@ test('post blog without author and title, get 400', async () => {
         .expect(400)
 })
 
+test('remove and get 204', async () => {
+    await api
+        .delete('/api/blogs/5a422a851b54a676234d17f7')
+        .expect(204)
+})
+
+test('update author', async () => {
+    await api
+    .put('/api/blogs/5a422a851b54a676234d17f7')
+    .send({
+        _id: "5a422a851b54a676234d17f7",
+        title: "React patterns",
+        author: "Adam Mickiewicz",
+        url: "https://reactpatterns.com/",
+        likes: 7,
+        __v: 0
+    })
+    .expect(200)
+})
 
 afterAll(() => {
     mongoose.connection.close()
